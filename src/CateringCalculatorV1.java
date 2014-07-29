@@ -30,7 +30,6 @@ public class CateringCalculatorV1 {
                 System.out.println(INSTRUCTIONS);
             else if (menuChoice.equals("C")) {
                 calculateAndPrintCatering();
-                System.out.println("Catering");
             }
             else
                 System.out.println("Invalid menu choice.");

@@ -3,11 +3,12 @@
     Lindsay Ward, IT@JCU
     July 2014
     This is a Java version of the first (Python) assignment from CP1200 2014 SP1
+    Demonstrating constants, functions, calculation, loops, selection and string formatting
  */
 
 import java.util.Scanner;
 
-public class Main {
+public class CateringCalculatorV1 {
 
     public static final String MENU = "\nMenu:\n(I)nstructions\n(C)alculate Catering\n(Q)uit";
     private static final Scanner inputStream = new Scanner(System.in);

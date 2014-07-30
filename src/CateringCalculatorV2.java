@@ -1,11 +1,12 @@
 /*
     CP1300 Demo
     Lindsay Ward, IT@JCU
-    July 2014
+    30th July, 2014
     This is a Java version of the second (Python) assignment from CP1200 2014 SP1
-    Demonstrating some more features including lists, file I/O, dictionary
+    Demonstrating some more features including lists, file I/O, dictionary (HasMap)
  */
 
+import java.io.*;
 import java.util.*;
 
 public class CateringCalculatorV2 {
@@ -18,12 +19,12 @@ public class CateringCalculatorV2 {
             "save the file for next time.";
     private static final String NO_PACKAGES_MESSAGE = "You need to add or load a package first.";
     private static final int PACKAGE_NAME_WIDTH = 16;
+    public static final String PACKAGES_FILE = "packages.txt";
 
     // A HashMap is like a dictionary in Python. This one maps strings (areas) to Doubles (costs)
     // Note that the value must be a class (Double) not a primitive type (double)
     // There is no way of specifying the initial values with a literal, so a static block is used
     private static final HashMap<String, Double> DELIVERY_COSTS;
-
     static {
         DELIVERY_COSTS = new HashMap<String, Double>(4);
         DELIVERY_COSTS.put("North", 8.5);
@@ -32,6 +33,11 @@ public class CateringCalculatorV2 {
         DELIVERY_COSTS.put("West", 15.0);
     }
 
+
+    /**
+     * main function for CateringCalculatorV2
+     * basic while loop for menu, handling inputs using if/else if (could be done with switch)
+     */
     public static void main(String[] args) {
 
         // Create main packages list using Java's ArrayList class
@@ -40,7 +46,7 @@ public class CateringCalculatorV2 {
         List<CateringPackage> packages = new ArrayList<CateringPackage>();
 
         System.out.println("Welcome to the Java version of the CP1200 Catering Calculator 2.0 (Assignment 2, 2014)");
-        System.out.println(MENU);
+        System.out.print(MENU);
         String menuChoice = inputStream.nextLine().toUpperCase();
         while (!menuChoice.equals("Q")) {
             // Note, we could also use a switch (with the first letter as the variable to compare)
@@ -58,7 +64,7 @@ public class CateringCalculatorV2 {
                     displayPackages(packages);
             } else if (menuChoice.equals("L")) {
                 packages = loadPackages();
-
+                System.out.println(packages.size() + " packages loaded");
             } else if (menuChoice.equals("S")) {
                 if (packages.size() == 0)
                     System.out.println(NO_PACKAGES_MESSAGE);
@@ -72,35 +78,72 @@ public class CateringCalculatorV2 {
                 System.out.println(newPackage.name + " added");
             } else
                 System.out.println("Invalid menu choice.");
-            System.out.println(MENU);
+            System.out.print(MENU);
             menuChoice = inputStream.nextLine().toUpperCase();
         }
         System.out.println("Thank you for using the Great CP1200 Catering Calculator, Java version.");
     }
 
+    /**
+     * loadPackages uses the Scanner class with a File as its stream (instead of System.in for console input)
+     * File opening potentially throws a checked exception so it must be caught with try/catch
+     * loop through file while it has a next line, convert each line (string) to an array with the split method,
+     * convert strings to doubles using the parseDouble method of the Double class,
+     * add (append) an anonymous CateringPackage object to the list, then return packages list
+     */
     private static List<CateringPackage> loadPackages() {
-        // TODO: loadPackages
-        System.out.println("loading...");
-        return null;
+        List<CateringPackage> packages = new ArrayList<CateringPackage>();
+
+        try {
+            File file = new File(PACKAGES_FILE);
+            Scanner inFileScanner = new Scanner(file);
+            while (inFileScanner.hasNextLine()) {
+                String line = inFileScanner.nextLine();
+                String[] parts = line.split(",");
+                packages.add(new CateringPackage(parts[0], Double.parseDouble(parts[1]), Double.parseDouble(parts[2])));
+            }
+            inFileScanner.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return packages;
     }
 
+    /**
+     * savePackages uses the FileWriter class inititalised using the text file name,
+     * writes each package to a new line much the same as it is printed in the displayPackages function
+     * File opening potentially throws a checked exception so it must be caught with try/catch
+     */
     private static void savePackages(List<CateringPackage> packages) {
-        // TODO: savePackages
-        System.out.println("saving...");
+        try {
+            FileWriter fileWriter = new FileWriter(PACKAGES_FILE);
+            for (int i = 0; i < packages.size(); i++)
+                fileWriter.write(String.format("%s, %.2f, %.2f\n", packages.get(i).name, packages.get(i).adultPrice, packages.get(i).childPrice));
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void displayPackages(List<CateringPackage> packages) {
         for (int i = 0; i < packages.size(); i++) {
-            System.out.println(String.format("%d. %s - $%5.2f / $%5.2f", i + 1, packages.get(i).name, packages.get(i).adultPrice, packages.get(i).childPrice));
+            System.out.println(String.format("%d. %-" + PACKAGE_NAME_WIDTH + "s - $%5.2f / $%5.2f", i + 1, packages.get(i).name, packages.get(i).adultPrice, packages.get(i).childPrice));
         }
     }
 
+    /**
+     * displayDeliveryChoices uses a foreach style loop through the keys of the HashMap, printing each key and value
+     */
     private static void displayDeliveryChoices() {
         for (String area : DELIVERY_COSTS.keySet()) {
             System.out.println(String.format("%-5s - $%.2f", area, DELIVERY_COSTS.get(area)));
         }
     }
 
+    /**
+     * getPackage reads console input (using Scanner), making use of the getValidDouble method
+     * returns an anonymous CateringPackage object constructed with initial values received from console input
+     */
     private static CateringPackage getPackage() {
         System.out.print("Enter package name: ");
         String name = inputStream.nextLine();
@@ -114,6 +157,11 @@ public class CateringCalculatorV2 {
         return new CateringPackage(name, adultPrice, childPrice);
     }
 
+    /**
+     * calculateAndPrintCatering takes in the list of packages, gets user input for catering parameters (with error checking),
+     * does the maths for the catering and prints the results making use of the String.format method
+     * The Random class is used to generate a random number for the lucky discount
+     */
     private static void calculateAndPrintCatering(List<CateringPackage> packages) {
         int numberAdults = (int)getValidDouble("Please enter number of adults: ", "Number must be valid and >= 0", 0);
         int numberChildren = (int)getValidDouble("Please enter number of children: ", "Number must be valid and >= 0", 0);
@@ -128,7 +176,8 @@ public class CateringCalculatorV2 {
         System.out.println("None");
         displayDeliveryChoices();
         String deliveryChoice = inputStream.nextLine();
-        // TODO: Handle as title case
+        // Convert deliveryChoice to Sentence case (only first letter capitalised)
+        deliveryChoice = deliveryChoice.substring(0, 1).toUpperCase() + deliveryChoice.substring(1).toLowerCase();
         while (!DELIVERY_COSTS.containsKey(deliveryChoice) && !deliveryChoice.equals("") && !deliveryChoice.equals("None")) {
             System.out.println("Invalid area - type the word.");
             deliveryChoice = inputStream.nextLine();
@@ -165,6 +214,9 @@ public class CateringCalculatorV2 {
                 cost, packages.get(packageChoice).name, discountMessage, deliveryMessage, numberAdults, adultWord, numberChildren, childWord));
     }
 
+    /**
+     * getValidDouble is a generic method that can be customised using the input parameters, returns a double
+     */
     private static double getValidDouble(String prompt, String error) {
         while (true) {
             System.out.print(prompt);
@@ -185,7 +237,7 @@ public class CateringCalculatorV2 {
 
     /**
      * This method shows polymorphism - using the same method name but different parameters
-     * It re-uses the getValidDouble method with two parameters, adding a minimum value requirement
+     * It calls the getValidDouble method that has two parameters, adding a minimum value requirement (3rd parameter)
      */
     private static double getValidDouble(String prompt, String error, double minimum) {
         double inputDouble = getValidDouble(prompt, error);

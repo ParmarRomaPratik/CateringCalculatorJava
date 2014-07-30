@@ -1,0 +1,4 @@
+Test 1, 45.40, 23.95
+Another one, 12.45, 9.30
+New pack (good), 23.00, 14.50
+Why no food, 12.00, 10.00

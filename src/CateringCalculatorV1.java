@@ -20,6 +20,9 @@ public class CateringCalculatorV1 {
             "Children are always %.0f%% of the price of adults.",
             ADULT_COST_PER_HEAD, ADULT_COST_PER_HEAD * PREMIUM_RATE, CHILD_COST_PER_HEAD / ADULT_COST_PER_HEAD * 100);
 
+    /**
+     * main function, handle menu options in main loop
+     */
     public static void main(String[] args) {
 
         System.out.println("Welcome to the Java version of the CP1200 Catering Calculator (Assignment 1, 2014)");
@@ -40,6 +43,9 @@ public class CateringCalculatorV1 {
         System.out.println("Thank you for using the Great CP1200 Catering Calculator, Java version.");
     }
 
+    /**
+     * function for getting details, calculating catering price and printing results
+     */
     private static void calculateAndPrintCatering() {
         System.out.println("Please enter number of adults:");
         int numberAdults = inputStream.nextInt();

@@ -1,5 +1,6 @@
-import java.io.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Random;
+import java.util.Scanner;
 
 import model.CateringPackage;
 import model.CateringPackages;
@@ -12,14 +13,6 @@ import model.CateringPackages;
  * @author Lindsay Ward
  * @version 0.2
  * @since 2014-7-30
- */
-/**
- * @author cpjjh
- *
- */
-/**
- * @author cpjjh
- * 
  */
 public class CateringCalculatorV2 {
 
@@ -93,7 +86,7 @@ public class CateringCalculatorV2 {
 					displayPackages(packages);
 				}
 				break;
-				
+
 			case "L":
 				packages.loadPackages();
 				System.out.println(packages.count() + " packages loaded");
@@ -107,13 +100,13 @@ public class CateringCalculatorV2 {
 					System.out.println(packages.count() + " packages saved");
 				}
 				break;
-				
+
 			case "A":
 				CateringPackage newPackage = defineNewPackage();
 				packages.add(newPackage);
 				System.out.println(newPackage.getName() + " added");
 				break;
-				
+
 			default:
 				System.out.println("Invalid menu choice.");
 				break;
@@ -269,12 +262,7 @@ public class CateringCalculatorV2 {
 				return inputDouble;
 			} else {
 				System.out.println(error);
-				// nextLine required to clear the stream, otherwise it loops
-				// infinitely
-				// TODO: Fix... only handles single line errors. How do I clear
-				// the whole stream?
-				// while (inputStream.hasNext())
-				inputStream.nextLine();
+				inputStream.reset();
 			}
 		}
 	}

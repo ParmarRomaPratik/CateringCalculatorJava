@@ -1,9 +1,10 @@
 /*
     CP1300 Demo
     Lindsay Ward, IT@JCU
-    30th July, 2014
+    30th July, 2014 - updated 4th August (just to test lab setup)
     This is a Java version of the second (Python) assignment from CP1200 2014 SP1
     Demonstrating some more features including lists, file I/O, dictionary (HasMap)
+    
  */
 
 import java.io.*;
